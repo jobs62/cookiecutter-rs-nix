@@ -11,7 +11,6 @@
     fenix = {
       url = "github:nix-community/fenix";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.rust-analyzer-src.follows = "";
     };
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -53,6 +52,12 @@
 
         apps.default = flake-utils.lib.mkApp {
             drv = {{ cookiecutter.project_slug }};
+        };
+
+        devShells.default = craneLib.devShell {
+          packages = [
+            pkgs.rust-analyzer
+          ];
         };
       }
     );
