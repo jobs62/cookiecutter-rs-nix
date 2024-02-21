@@ -50,6 +50,19 @@
             default = {{ cookiecutter.project_slug }};
         };
 
+        checks = {
+          inherit {{ cookiecutter.project_slug }};
+
+          {{ cookiecutter.project_slug }}-clippy = craneLib.cargoClippy (commonArgs // {
+            inherit cargoArtifacts;
+            cargoClippyExtraArgs = "--all-targets -- --deny warnings";
+          });
+
+          {{ cookiecutter.project_slug }}-fmt = craneLib.cargoFmt (commonArgs // {
+            inherit src;
+          });
+        };
+
         apps.default = flake-utils.lib.mkApp {
             drv = {{ cookiecutter.project_slug }};
         };
