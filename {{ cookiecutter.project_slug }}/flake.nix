@@ -25,7 +25,7 @@
 
         inherit (pkgs) lib;
 
-        craneLib = crane.lib.${system};
+        craneLib = crane.mkLib pkgs;
         src = craneLib.cleanCargoSource (craneLib.path ./.);
 
         commonArgs = {
