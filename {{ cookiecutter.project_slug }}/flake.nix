@@ -23,8 +23,6 @@
           inherit system;
         };
 
-        inherit (pkgs) lib;
-
         craneLib = crane.mkLib pkgs;
         src = craneLib.cleanCargoSource (craneLib.path ./.);
 
@@ -53,12 +51,12 @@
         checks = {
           inherit {{ cookiecutter.project_slug }};
 
-          {{ cookiecutter.project_slug }}-clippy = craneLib.cargoClippy (commonArgs // {
+          {{ cookiecutter.project_slug }}-clippy = craneLibLlvmTools.cargoClippy (commonArgs // {
             inherit cargoArtifacts;
             cargoClippyExtraArgs = "--all-targets -- --deny warnings";
           });
 
-          {{ cookiecutter.project_slug }}-fmt = craneLib.cargoFmt (commonArgs // {
+          {{ cookiecutter.project_slug }}-fmt = craneLibLlvmTools.cargoFmt (commonArgs // {
             inherit src;
           });
         };
@@ -67,7 +65,9 @@
             drv = {{ cookiecutter.project_slug }};
         };
 
-        devShells.default = craneLib.devShell {
+        devShells.default = craneLibLlvmTools.devShell {
+          checks = self.checks.${system};
+
           packages = [
             pkgs.rust-analyzer
           ];
