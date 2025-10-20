@@ -36,11 +36,15 @@
             "cargo"
             "llvm-tools"
             "rustc"
+            "rust-std"
+            "rustfmt"
+            "clippy"
+            "rust-docs"
           ]);
 
-        cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+        cargoArtifacts = craneLibLlvmTools.buildDepsOnly commonArgs;
 
-        {{ cookiecutter.project_slug }} = craneLib.buildPackage (commonArgs // {
+        {{ cookiecutter.project_slug }} = craneLibLlvmTools.buildPackage (commonArgs // {
             inherit cargoArtifacts;
         });
       in {
