@@ -68,10 +68,3 @@ dbg_macro = "warn"
 # a deliberate #[expect(..., reason = "…")] rather than a silent #[allow]
 allow_attributes = "warn"
 allow_attributes_without_reason = "warn"
-
-# Workspace clippy.toml
-allow-indexing-slicing-in-tests = true
-allow-panic-in-tests = true
-allow-unwrap-in-tests = true
-allow-expect-in-tests = true
-allow-dbg-in-tests = true  
