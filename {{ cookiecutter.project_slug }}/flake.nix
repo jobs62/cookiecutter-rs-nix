@@ -4,8 +4,8 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs";
     crane = {
-        url = "github:ipetkov/crane";
-        inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:ipetkov/crane";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     fenix = {
@@ -14,9 +14,19 @@
     };
 
     flake-utils.url = "github:numtide/flake-utils";
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    advisory-db = {
+      url = "github:rustsec/advisory-db";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, crane, fenix, flake-utils }:
+  outputs = { self, nixpkgs, crane, fenix, flake-utils, treefmt-nix, advisory-db }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -47,9 +57,11 @@
         {{ cookiecutter.project_slug }} = craneLibLlvmTools.buildPackage (commonArgs // {
             inherit cargoArtifacts;
         });
+
+        treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       in {
         packages = {
-            default = {{ cookiecutter.project_slug }};
+          default = {{ cookiecutter.project_slug }};
         };
 
         checks = {
@@ -60,13 +72,25 @@
             cargoClippyExtraArgs = "--all-targets -- --deny warnings";
           });
 
-          {{ cookiecutter.project_slug }}-fmt = craneLibLlvmTools.cargoFmt (commonArgs // {
-            inherit src;
+          {{ cookiecutter.project_slug }}-test = craneLibLlvmTools.cargoTest (commonArgs // {
+            inherit cargoArtifacts;
           });
+
+          {{ cookiecutter.project_slug }}-audit = craneLibLlvmTools.cargoAudit (commonArgs // {
+            inherit src advisory-db;
+          });
+          
+          #{{ cookiecutter.project_slug }}-deny = craneLibLlvmTools.cargoDeny (commonArgs // {
+          #        inherit src;
+          #});
+
+          formatting = treefmtEval.config.build.check self;
         };
 
+        formatter = treefmtEval.config.build.wrapper;
+
         apps.default = flake-utils.lib.mkApp {
-            drv = {{ cookiecutter.project_slug }};
+          drv = {{ cookiecutter.project_slug }};
         };
 
         devShells.default = craneLibLlvmTools.devShell {
