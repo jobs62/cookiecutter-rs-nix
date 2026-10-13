@@ -20,7 +20,7 @@ jobs:
           python-version: '3.15'
 
       - name: Setup Nix
-        uses: DeterminateSystems/nix-installer-action@v20
+        uses: DeterminateSystems/nix-installer-action@v23
 
       - name: Install dependencies
         run: |
