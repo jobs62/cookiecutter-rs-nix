@@ -6,7 +6,7 @@ workflows:
     '.github/workflows/test.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-python@v7.1.0'
-        - 'determinatesystems/magic-nix-cache-action@v13'
+        - 'determinatesystems/magic-nix-cache-action@v15'
         - 'determinatesystems/nix-installer-action@v23'
 dependencies:
     'actions/checkout@v7.0.1':
@@ -19,9 +19,9 @@ dependencies:
         commit: 'sha1-6d4fd22b20465ccc0f7354476588e8df7c9ca0e0'
         owner_id: 44036562
         repo_id: 192625525
-    'determinatesystems/magic-nix-cache-action@v13':
-        ref: 'v13'
-        commit: 'sha1-565684385bcd71bad329742eefe8d12f2e765b39'
+    'determinatesystems/magic-nix-cache-action@v15':
+        ref: 'v15'
+        commit: 'sha1-84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7'
         owner_id: 80991770
         repo_id: 657706878
     'determinatesystems/nix-installer-action@v23':
