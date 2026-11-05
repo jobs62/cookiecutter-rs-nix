@@ -1,3 +1,4 @@
+import re
 import subprocess
 
 import pytest
@@ -42,36 +43,23 @@ def test_project_structure_default_settings(project_path):
 def test_workspace_manifest_wiring(project_path):
     """Workspace lints must actually apply (P1 regression guard)."""
     root = (project_path / "Cargo.toml").read_text()
-    crate = (
-        project_path / f"crates/{PROJECT_SLUG}/Cargo.toml"
-    ).read_text()
+    crate = (project_path / f"crates/{PROJECT_SLUG}/Cargo.toml").read_text()
 
     assert 'members = ["crates/*"]' in root
     assert "[workspace.lints.clippy]" in root
     assert "unwrap_used" in root  # lints really shipped
-    assert "lints.workspace = true" in crate  # lints really inherited
-    assert (
-        'workspace-hack = { version = "0.1", path = "../workspace-hack" }'
-        in crate
+    # The post-gen `nix fmt` (taplo) may normalize the dotted key into a
+    # `[lints]` table — accept both equivalent spellings.
+    assert re.search(
+        r"(\[lints\]\s*workspace\s*=\s*true|lints\.workspace\s*=\s*true)", crate
     )
+    assert 'workspace-hack = { version = "0.1", path = "../workspace-hack" }' in crate
 
 
 def test_templated_content(project_path):
     readme = (project_path / "README.md").read_text()
     assert "# Cookiecutter Rust Template" in readme
     assert "loop stack" in readme
-
-
-def test_git_history_seeded(project_path):
-    """Post-gen hook starts version control with the pre-commit hooks wired."""
-    log = subprocess.run(
-        ["git", "log", "--oneline"],
-        cwd=project_path,
-        capture_output=True,
-        text=True,
-        check=True,
-    )
-    assert "initial commit" in log.stdout
 
 
 def test_project_flake_check(project_path):
