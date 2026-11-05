@@ -1,10 +1,9 @@
 # L3/L4 layer: the compile/test loop and the machine-evaluable CI gate.
 # One derivation per workspace crate over a single shared dependency build:
 # touching one crate never rebuilds dependencies or the other crates.
-{
+{inputs, ...}: {
   perSystem = {
     config,
-    inputs,
     lib,
     pkgs,
     self',
