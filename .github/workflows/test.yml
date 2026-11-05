@@ -23,7 +23,7 @@ jobs:
         uses: DeterminateSystems/nix-installer-action@v23
 
       - name: Setup magic nix cache
-        uses: DeterminateSystems/magic-nix-cache-action@v13
+        uses: DeterminateSystems/magic-nix-cache-action@v15
 
       - name: Install dependencies
         run: |
