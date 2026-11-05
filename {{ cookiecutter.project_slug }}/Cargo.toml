@@ -1,11 +1,10 @@
-[package]
-name = "{{ cookiecutter.project_slug }}"
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
-description = "{{ cookiecutter.description }}"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-[dependencies]
 
 # https://emschwartz.me/your-clippy-config-should-be-stricter/
 [workspace.lints.clippy]
@@ -35,7 +34,7 @@ assertions_on_result_states = "warn"
 # Don't Do Bad Async Stuff - prevent deadlocks and concurrency bugs
 await_holding_lock = "warn"
 await_holding_refcell_ref = "warn"
-if_let_mutex = "warn"  # only relevant on editions before 2024
+if_let_mutex = "warn"              # only relevant on editions before 2024
 large_futures = "warn"
 
 # Don't Do Unsafe Things with Memory

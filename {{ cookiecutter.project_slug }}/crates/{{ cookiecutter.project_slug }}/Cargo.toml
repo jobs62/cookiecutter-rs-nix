@@ -1,0 +1,11 @@
+[package]
+name = "{{ cookiecutter.project_slug }}"
+version.workspace = true
+edition.workspace = true
+description = "{{ cookiecutter.description }}"
+
+[lints]
+workspace = true
+
+[dependencies]
+workspace-hack = { version = "0.1", path = "../workspace-hack" }
