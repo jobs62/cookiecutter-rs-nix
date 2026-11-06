@@ -29,6 +29,17 @@ Everything is wired through [flake-parts](https://flake.parts) modules in
   dependency build). Never edit by hand: `cargo hakari generate` — CI fails if
   it drifts.
 
+### Dev loop performance
+
+Follows the [cargo build-performance guide](https://doc.rust-lang.org/cargo/guide/build-performance.html):
+
+- `profile.dev` uses `debug = "line-tables-only"` and skips debuginfo for
+  dependencies — smaller/faster `target/`, faster links, backtraces still
+  useful. Need a real debugger session? Build with `--profile debugging`.
+- On Linux the devshell wires [mold](https://github.com/rui314/mold) via
+  `RUSTFLAGS` to cut incremental link times. It is devshell-only: Nix-sandbox
+  builds (CI gate) never see it.
+
 ### Lints
 
 Workspace-level clippy lints (strict, panic/failure-averse) are defined in the

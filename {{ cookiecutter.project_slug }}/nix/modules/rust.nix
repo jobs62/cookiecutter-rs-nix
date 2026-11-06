@@ -125,11 +125,23 @@
       # Inherit inputs from checks.
       checks = self'.checks;
 
-      packages = [
-        pkgs.cargo-hakari
-        pkgs.cargo-nextest
-        pkgs.rust-analyzer
-      ];
+      packages =
+        [
+          pkgs.cargo-hakari
+          pkgs.cargo-nextest
+          pkgs.rust-analyzer
+        ]
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+          pkgs.mold
+        ];
+
+      # mold cuts incremental link times in the dev loop. gcc only accepts
+      # -fuse-ld=<name>, not a store path, so the name form resolves through
+      # the devshell PATH where mold is packaged above. RUSTFLAGS is
+      # devshell-only: Nix sandbox builds (CI gate) never see it.
+      env = lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
+        RUSTFLAGS = "-Clink-arg=-fuse-ld=mold";
+      };
 
       # Install the git hooks on shell entry (see modules/pre-commit.nix).
       shellHook = config.pre-commit.shellHook;

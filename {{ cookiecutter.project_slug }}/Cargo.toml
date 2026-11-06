@@ -6,6 +6,20 @@ members = ["crates/*"]
 version = "0.1.0"
 edition = "2024"
 
+# Faster dev feedback (https://doc.rust-lang.org/cargo/guide/build-performance.html):
+# line-tables-only backtraces for workspace code, no debuginfo for
+# dependencies; smaller and faster `target/`, faster links. Opt back into
+# full debuginfo for a debugger session with `--profile debugging`.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+
+[profile.debugging]
+inherits = "dev"
+debug = true
+
 # https://emschwartz.me/your-clippy-config-should-be-stricter/
 [workspace.lints.clippy]
 # Don't Panic - prevent panics from unwraps and unsafe slicing or indexing
