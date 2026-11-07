@@ -46,6 +46,9 @@ def test_workspace_manifest_wiring(project_path):
     crate = (project_path / f"crates/{PROJECT_SLUG}/Cargo.toml").read_text()
 
     assert 'members = ["crates/*"]' in root
+    assert "[profile.dev]" in root
+    assert 'debug = "line-tables-only"' in root
+    assert "[profile.debugging]" in root  # opt-in full debuginfo
     assert "[workspace.lints.clippy]" in root
     assert "unwrap_used" in root  # lints really shipped
     # The post-gen `nix fmt` (taplo) may normalize the dotted key into a
